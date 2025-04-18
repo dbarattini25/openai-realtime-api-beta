@@ -1,3 +1,34 @@
+# New Feature of This Fork: Model Selection
+
+With this fork, users can now specify the underlying model for Realtime API processing. Previously, the model was hardcoded, but now you can dynamically choose the model that best suits your application's needs.
+
+## Setting the Model
+
+After initializing the RealtimeClient, you can specify your preferred model by providing it as a parameter when calling the connect() function.
+
+Supported models include (but are not limited to):
+- `gpt-4o-realtime-preview-2024-12-17`
+- `gpt-4o-realtime-preview-2024-10-01` 
+
+### Example: Realtime Client Initialization
+
+```javascript
+import { RealtimeClient } from '@openai/realtime-api-beta';
+const client = new RealtimeClient({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+```
+
+### Example: Updating the Model Before Connection
+
+```javascript
+client.connect({
+  model: 'gpt-4o-realtime-preview-2024-12-17', // Change the model before connecting
+});
+```
+
+If no model is specified, the client will default to `gpt-4o-realtime-preview-2024-12-17`.
+
 # Reference Client: Realtime API (beta)
 
 This repository contains a reference client aka sample library for connecting
@@ -11,6 +42,16 @@ the reference client to deliver a fully-functional API inspector with examples
 of voice visualization and more.
 
 # Quickstart
+
+This library is built to be used both server-side (Node.js) and in browser (React, Vue),
+in both JavaScript and TypeScript codebases. While in beta, to install the library you will
+need to `npm install` directly from the GitHub repository.
+
+```shell
+$ npm i openai/openai-realtime-api-beta --save
+```
+
+# Usage Examples
 
 This library is built to be used both server-side (Node.js) and in browser (React, Vue),
 in both JavaScript and TypeScript codebases. While in beta, to install the library you will
