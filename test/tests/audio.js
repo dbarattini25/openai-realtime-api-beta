@@ -104,7 +104,7 @@ export async function run({ debug = false } = {}) {
       expect(responseEvent.event.type).to.equal('response.create');
     });
 
-    it('Should waitForNextItem to receive "conversation.item.created" from user', async function () {
+    it('Should waitForNextItem to receive "conversation.item.added" from user', async function () {
       this.timeout(10_000);
 
       const { item } = await client.waitForNextItem();
@@ -116,7 +116,7 @@ export async function run({ debug = false } = {}) {
       expect(item.formatted.text).to.equal(``);
     });
 
-    it('Should waitForNextItem to receive "conversation.item.created" from assistant', async function () {
+    it('Should waitForNextItem to receive "conversation.item.added" from assistant', async function () {
       this.timeout(10_000);
 
       const { item } = await client.waitForNextItem();
