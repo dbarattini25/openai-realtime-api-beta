@@ -1,10 +1,14 @@
 /**
  * Valid audio formats
- * @typedef {"pcm16"|"g711_ulaw"|"g711_alaw"} AudioFormatType
+ * @typedef {Object} AudioFormatType
+ * @property {"audio/pcm"|"audio/pcmu"|"audio/pcma"} type
+ * @property {number} [rate] - Sample rate, required for audio/pcm (always 24000)
  */
 /**
  * @typedef {Object} AudioTranscriptionType
  * @property {"whisper-1"} model
+ * @property {"en"} language
+ * @property {string} prompt
  */
 /**
  * @typedef {Object} TurnDetectionServerVadType
@@ -22,19 +26,19 @@
  * @property {{[key: string]: any}} parameters
  */
 /**
+ * @typedef {Object} AudioConfigType
+ * @property {{format: AudioFormatType, transcription: AudioTranscriptionType, turn_detection: TurnDetectionServerVadType}} [input]
+ * @property {{format: AudioFormatType, voice: "alloy"|"ash"|"ballad"|"coral"|"echo"|"sage"|"shimmer"|"verse"|"marin"|"cedar", speed?: number}} [output]
+ */
+/**
  * @typedef {Object} SessionResourceType
  * @property {string} [model]
- * @property {string[]} [modalities]
+ * @property {string[]} [output_modalities]
  * @property {string} [instructions]
- * @property {"alloy"|"ash"|"ballad"|"coral"|"echo"|"sage"|"shimmer"|"verse"} [voice]
- * @property {AudioFormatType} [input_audio_format]
- * @property {AudioFormatType} [output_audio_format]
- * @property {AudioTranscriptionType|null} [input_audio_transcription]
- * @property {TurnDetectionServerVadType|null} [turn_detection]
+ * @property {AudioConfigType} [audio]
  * @property {ToolDefinitionType[]} [tools]
  * @property {"auto"|"none"|"required"|{type:"function",name:string}} [tool_choice]
- * @property {number} [temperature]
- * @property {number|"inf"} [max_response_output_tokens]
+ * @property {number|"inf"} [max_output_tokens]
  */
 /**
  * @typedef {"in_progress"|"completed"|"incomplete"} ItemStatusType
@@ -169,17 +173,27 @@ export class RealtimeClient extends RealtimeEventHandler {
         debug?: boolean;
     });
     defaultSessionConfig: {
-        modalities: string[];
+        output_modalities: string[];
         instructions: string;
-        voice: string;
-        input_audio_format: string;
-        output_audio_format: string;
-        input_audio_transcription: any;
-        turn_detection: any;
+        audio: {
+            input: {
+                format: {
+                    type: string;
+                    rate: number;
+                };
+                turn_detection: any;
+            };
+            output: {
+                format: {
+                    type: string;
+                    rate: number;
+                };
+                voice: string;
+            };
+        };
         tools: any[];
         tool_choice: string;
-        temperature: number;
-        max_response_output_tokens: number;
+        max_output_tokens: number;
     };
     sessionConfig: {};
     transcriptionModels: {
@@ -268,7 +282,7 @@ export class RealtimeClient extends RealtimeEventHandler {
      * If the client is not yet connected, will save details and instantiate upon connection
      * @param {SessionResourceType} [sessionConfig]
      */
-    updateSession({ modalities, instructions, voice, input_audio_format, output_audio_format, input_audio_transcription, turn_detection, tools, tool_choice, temperature, max_response_output_tokens, }?: SessionResourceType): boolean;
+    updateSession({ output_modalities, instructions, audio, tools, tool_choice, max_output_tokens, }?: SessionResourceType): boolean;
     /**
      * Sends user message content and generates a response
      * @param {Array<InputTextContentType|InputAudioContentType>} content
@@ -314,9 +328,17 @@ export class RealtimeClient extends RealtimeEventHandler {
 /**
  * Valid audio formats
  */
-export type AudioFormatType = "pcm16" | "g711_ulaw" | "g711_alaw";
+export type AudioFormatType = {
+    type: "audio/pcm" | "audio/pcmu" | "audio/pcma";
+    /**
+     * - Sample rate, required for audio/pcm (always 24000)
+     */
+    rate?: number;
+};
 export type AudioTranscriptionType = {
     model: "whisper-1";
+    language: "en";
+    prompt: string;
 };
 export type TurnDetectionServerVadType = {
     type: "server_vad";
@@ -335,23 +357,29 @@ export type ToolDefinitionType = {
         [key: string]: any;
     };
 };
+export type AudioConfigType = {
+    input?: {
+        format: AudioFormatType;
+        transcription: AudioTranscriptionType;
+        turn_detection: TurnDetectionServerVadType;
+    };
+    output?: {
+        format: AudioFormatType;
+        voice: "alloy" | "ash" | "ballad" | "coral" | "echo" | "sage" | "shimmer" | "verse" | "marin" | "cedar";
+        speed?: number;
+    };
+};
 export type SessionResourceType = {
     model?: string;
-    modalities?: string[];
+    output_modalities?: string[];
     instructions?: string;
-    voice?: "alloy" | "ash" | "ballad" | "coral" | "echo" | "sage" | "shimmer" | "verse";
-
-    input_audio_format?: AudioFormatType;
-    output_audio_format?: AudioFormatType;
-    input_audio_transcription?: AudioTranscriptionType | null;
-    turn_detection?: TurnDetectionServerVadType | null;
+    audio?: AudioConfigType;
     tools?: ToolDefinitionType[];
     tool_choice?: "auto" | "none" | "required" | {
         type: "function";
         name: string;
     };
-    temperature?: number;
-    max_response_output_tokens?: number | "inf";
+    max_output_tokens?: number | "inf";
 };
 export type ItemStatusType = "in_progress" | "completed" | "incomplete";
 export type InputTextContentType = {

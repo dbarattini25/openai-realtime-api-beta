@@ -15,7 +15,11 @@
 export class RealtimeConversation {
     defaultFrequency: number;
     EventProcessors: {
-        'conversation.item.created': (event: any) => {
+        'conversation.item.added': (event: any) => {
+            item: any;
+            delta: any;
+        };
+        'conversation.item.done': (event: any) => {
             item: any;
             delta: any;
         };
@@ -57,19 +61,19 @@ export class RealtimeConversation {
             item: any;
             delta: any;
         };
-        'response.audio_transcript.delta': (event: any) => {
+        'response.output_audio_transcript.delta': (event: any) => {
             item: any;
             delta: {
                 transcript: any;
             };
         };
-        'response.audio.delta': (event: any) => {
+        'response.output_audio.delta': (event: any) => {
             item: any;
             delta: {
-                audio: Int16Array;
+                audio: Int16Array<ArrayBuffer>;
             };
         };
-        'response.text.delta': (event: any) => {
+        'response.output_text.delta': (event: any) => {
             item: any;
             delta: {
                 text: any;
@@ -82,7 +86,7 @@ export class RealtimeConversation {
             };
         };
     };
-    queuedInputAudio: Int16Array;
+    queuedInputAudio: Int16Array<ArrayBufferLike>;
     /**
      * Clears the conversation history and resets to default
      * @returns {true}
