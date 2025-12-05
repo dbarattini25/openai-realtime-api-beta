@@ -13,9 +13,19 @@
 /**
  * @typedef {Object} TurnDetectionServerVadType
  * @property {"server_vad"} type
+ * @property {boolean} [create_response]
+ * @property {boolean} [interrupt_response]
  * @property {number} [threshold]
  * @property {number} [prefix_padding_ms]
  * @property {number} [silence_duration_ms]
+ * @property {number} [idle_timeout_ms]
+ */
+/**
+ * @typedef {Object} TurnDetectionSemanticVadType
+ * @property {"semantic_vad"} type
+ * @property {boolean} [create_response]
+ * @property {boolean} [interrupt_response]
+ * @property {"low"|"medium"|"high"|"auto"} [eagerness]
  */
 /**
  * Tool definitions
@@ -27,7 +37,7 @@
  */
 /**
  * @typedef {Object} AudioConfigType
- * @property {{format: AudioFormatType, transcription: AudioTranscriptionType, turn_detection: TurnDetectionServerVadType}} [input]
+ * @property {{format: AudioFormatType, transcription: AudioTranscriptionType, turn_detection: TurnDetectionServerVadType|TurnDetectionSemanticVadType|null}} [input]
  * @property {{format: AudioFormatType, voice: "alloy"|"ash"|"ballad"|"coral"|"echo"|"sage"|"shimmer"|"verse"|"marin"|"cedar", speed?: number}} [output]
  */
 /**
@@ -342,9 +352,18 @@ export type AudioTranscriptionType = {
 };
 export type TurnDetectionServerVadType = {
     type: "server_vad";
+    create_response?: boolean;
+    interrupt_response?: boolean;
     threshold?: number;
     prefix_padding_ms?: number;
     silence_duration_ms?: number;
+    idle_timeout_ms?: number;
+};
+export type TurnDetectionSemanticVadType = {
+    type: "semantic_vad";
+    create_response?: boolean;
+    interrupt_response?: boolean;
+    eagerness?: "low" | "medium" | "high" | "auto";
 };
 /**
  * Tool definitions
@@ -361,7 +380,7 @@ export type AudioConfigType = {
     input?: {
         format: AudioFormatType;
         transcription: AudioTranscriptionType;
-        turn_detection: TurnDetectionServerVadType;
+        turn_detection: TurnDetectionServerVadType | TurnDetectionSemanticVadType | null;
     };
     output?: {
         format: AudioFormatType;
