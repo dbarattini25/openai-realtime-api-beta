@@ -37,8 +37,8 @@
  */
 /**
  * @typedef {Object} AudioConfigType
- * @property {{format: AudioFormatType, transcription: AudioTranscriptionType, turn_detection: TurnDetectionServerVadType|TurnDetectionSemanticVadType|null}} [input]
- * @property {{format: AudioFormatType, voice: "alloy"|"ash"|"ballad"|"coral"|"echo"|"sage"|"shimmer"|"verse"|"marin"|"cedar", speed?: number}} [output]
+ * @property {{format?: AudioFormatType, transcription?: AudioTranscriptionType, turn_detection?: TurnDetectionServerVadType|TurnDetectionSemanticVadType|null}} [input]
+ * @property {{format?: AudioFormatType, voice?: "alloy"|"ash"|"ballad"|"coral"|"echo"|"sage"|"shimmer"|"verse"|"marin"|"cedar", speed?: number}} [output]
  */
 /**
  * @typedef {Object} SessionResourceType
@@ -378,13 +378,13 @@ export type ToolDefinitionType = {
 };
 export type AudioConfigType = {
     input?: {
-        format: AudioFormatType;
-        transcription: AudioTranscriptionType;
-        turn_detection: TurnDetectionServerVadType | TurnDetectionSemanticVadType | null;
+        format?: AudioFormatType;
+        transcription?: AudioTranscriptionType;
+        turn_detection?: TurnDetectionServerVadType | TurnDetectionSemanticVadType | null;
     };
     output?: {
-        format: AudioFormatType;
-        voice: "alloy" | "ash" | "ballad" | "coral" | "echo" | "sage" | "shimmer" | "verse" | "marin" | "cedar";
+        format?: AudioFormatType;
+        voice?: "alloy" | "ash" | "ballad" | "coral" | "echo" | "sage" | "shimmer" | "verse" | "marin" | "cedar";
         speed?: number;
     };
 };
